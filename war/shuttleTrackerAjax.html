@@ -1,0 +1,69 @@
+<html>
+	<head>
+		<title>Tracker Data Input (AJAX)</title>
+		
+		<script
+			src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+			type="text/javascript">
+		</script>
+		
+		<style type="text/css">
+		td.label {
+			text-align: right;
+			font-weight: bold;
+		}
+		
+		.error {
+			color: red;
+		}
+		</style>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#submitData").click(function() {
+					$.ajax({
+						type: 'POST',
+						url: '/lab12/ajax/addData',
+						data: { latitude: $("#latitude").val(), longitude: $("#longitude").val(), mac: $("#mac").val() },
+						success:
+							function(data, textStatus, jqXHR) {
+								$("#resultElt").text(data);
+							},
+						error:
+							function(jqXHR, textStatus, errorThrown) {
+								$("#errorElt").text(textStatus + ": " + errorThrown);
+							},
+						dataType: 'text'
+					});
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<table>
+			<tr>
+				<td class="label">ID:</td>
+				<td><input id="id" type="text" size="12" /></td>
+			</tr>
+			<tr>
+				<td class="label">MAC Address:</td>
+				<td><input id="mac" type="text" size="12" /></td>
+			</tr>
+			<tr>
+				<td class="label">Latitude:</td>
+				<td><input id="latitude" type="text" size="12" /></td>
+			</tr>
+			<tr>
+				<td class="label">Longitude:</td>
+				<td><input id="longitude" type="text" size="12" /></td>
+			</tr>
+		</table>
+		<div>
+			<button id="submitData">Submit</button>
+		</div>
+		<div>
+			<span id="errorElt" class="error"></span>
+		</div>
+	</body>
+</html>

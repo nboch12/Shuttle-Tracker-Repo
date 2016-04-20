@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<title>Display GPS (AJAX)</title>
+		
+		<script
+			src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"
+			type="text/javascript">
+		</script>
+		
+		<style type="text/css">
+		td.label {
+			text-align: right;
+			font-weight: bold;
+		}
+		
+		.error {
+			color: red;
+		}
+		</style>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#updateData").click(function() {
+					$.ajax({
+						type: 'GET',
+						url: '/lab12/ajax/updateData',
+						data: { latitude: $("#latitude").val(), longitude: $("#longitude").val(), mac: $("#mac").val(), id: $("#id").val()},
+						success:
+							function(data, textStatus, jqXHR) {
+								$("#resultElt").text(data);
+							},
+						error:
+							function(jqXHR, textStatus, errorThrown) {
+								$("#errorElt").text(textStatus + ": " + errorThrown);
+							},
+						dataType: 'text'
+					});
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		Wut
+	</body>
+</html>
