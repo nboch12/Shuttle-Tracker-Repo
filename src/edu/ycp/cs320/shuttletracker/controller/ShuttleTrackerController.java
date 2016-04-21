@@ -5,6 +5,8 @@ import edu.ycp.cs320.shuttletracker.model.ShuttleTracker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.io.BufferedReader;
@@ -15,14 +17,22 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.Queue;
 
 public class ShuttleTrackerController {
 	private ShuttleTracker model;
-	private String fileName = "pidata.csv";
-	private String parsedLine[] = {"0","0.0","0.0","00:00:00:00:00","test"};
+	private Hashtable<Integer, Queue<String>> data = new Hashtable<Integer, Queue<String>>();
+	
+	// SQL String Variables
+	private int id;
+	private double lat;
+	private double lon;
+	private String mac;
+	private String time;
 	
 	/** The name of the MySQL account to use (or empty for anonymous) */
 	private final String userName = "root";
@@ -88,23 +98,8 @@ public class ShuttleTrackerController {
 		Date date = new Date();
 		model.setTime(dateFormat.format(date));
 		
-		try{
-			File f = new File(fileName);
-			if(!f.exists()) {
-				outputCSV();
-			}
-			FileReader fr = new FileReader(fileName);			
-			BufferedReader br = new BufferedReader(fr);
-			if( br.readLine() == null )
-				outputCSV();	
-			br.close();
-		} catch ( IOException e )
-		{
-			e.printStackTrace();
-		}
-		
-		
-		
+		// Load initial data from database
+		getData();
 	}
 	
 	public void updateModel(int id, Double lat, Double lon, String mac, String time)
@@ -116,22 +111,21 @@ public class ShuttleTrackerController {
 		model.setTime(time);	
 		
 		
-		outputCSV();
+		outputToDatabase();
 		
 		System.out.println("updateModel: " + id + " " + lat + " " + lon + " " + mac + " " + time);
 	}
 	
 	
 	
-	public void outputCSV()
+	public void outputToDatabase()
 	{
-		
 		
 		// Connect to MySQL
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			System.out.println("Connected to database");
+			System.out.println("\nConnected to database. Trying to send data");
 		} catch (SQLException e) {
 			System.out.println("ERROR: Could not connect to the database");
 			e.printStackTrace();
@@ -157,34 +151,14 @@ public class ShuttleTrackerController {
 	        
 	        update_pidata.executeUpdate();
 	        conn.commit();
+	        conn.close();
 	    } catch (SQLException e ) {
 	    	System.out.println("ERROR: Could not insert records");
 			e.printStackTrace();
 			return;
 	    }
 		
-		
-		/*try {
-			Statement stmt = null;
-			//STEP 4: Execute a query
-		      System.out.println("Inserting records into the table...");
-		      stmt = conn.createStatement();
-		      
-		      String sql = "INSERT INTO pi_data" +
-		                   "VALUES (" + model.getId() + "," + model.getLatitude() + "," + model.getLongitude() + "," + model.getMAC() + "," + model.getTime() + "," + model.getComment()+ ");";
-		      
-		      
-		      
-		      this.executeUpdate(conn, sql);
-		      System.out.println("Inserted records into the table...");
-
-			
-	    } catch (SQLException e) {
-			System.out.println("ERROR: Could not insert records");
-			e.printStackTrace();
-			return;
-		}*/
-		
+		/* Old code to write to CSV
 		try{
 			FileWriter fw = new FileWriter(fileName, true);
 			fw.write(model.getId() + "," + model.getLatitude() + "," + model.getLongitude() + "," + model.getMAC() + "," + model.getTime() + "," + model.getComment() + "\n");		
@@ -192,58 +166,111 @@ public class ShuttleTrackerController {
 		} catch( IOException e )
 		{
 			e.printStackTrace();
-		}
-		
-		
+		}	*/	
 	}
 	
-	public void parseLastLine()
+	public void getData()
 	{
-		try{
-			FileReader fr = new FileReader(fileName);
-			BufferedReader br = new BufferedReader(fr);
-			String line = "";
-			String lastline = "";
+		// Connect to MySQL
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			System.out.println("\nConnected to database. Trying to get data");
+		} catch (SQLException e) {
+			System.out.println("\nERROR: Could not connect to the database\n");
+			e.printStackTrace();
+			return;
+		}
+		
+		// Get data from MySQL	
+		try {
+			Statement st = conn.createStatement();
+			String sql = "SELECT * FROM pi_data";
 			
-			while( (line = br.readLine()) != null )
+			ResultSet rs = st.executeQuery(sql);
+					
+			while( rs.next() )
 			{
-				lastline = line;
+				// Parse set into variables
+				id = rs.getInt("PI_ID");				
+				lat = rs.getDouble("LATITUDE");
+				lon = rs.getDouble("LONGITUDE");
+				mac = rs.getString("MAC_ADDR");
+				time = rs.getString("DATE");
+				
+				// Add new entry to queue
+				Queue<String> tempQ = new LinkedList();
+				
+				// Use previous queue 
+				if( data.get(id) != null )
+				{
+					tempQ = data.get(id);
+					// If entry doesn't exist already, add it
+					if( !tempQ.contains(time) )
+					{
+						tempQ.add(id + "," + lat + "," + lon + "," + mac + "," + time);
+						data.put(id, tempQ );
+					} else {
+						System.out.println("Entry exists. Wasn't added");
+					}
+				} else
+				{
+					// If the queue is empty, add entry
+					tempQ.add(id + "," + lat + "," + lon + "," + mac + "," + time);
+					data.put(id, tempQ );
+				}												
 			}
 			
+			// Output entire ResultSet 
+			// System.out.println(data);
 			
-			
-			// Parse line into separate array entries
-			parsedLine = lastline.split(",");
-			
-			br.close();
-			
-		} catch ( IOException e)
-		{
+		} catch ( SQLException e ) {
+			System.out.println("ERROR: Could not pull records");
 			e.printStackTrace();
-		}
-		
+			return;
+		}		
 	}
 	
-	public int getId()
+	// Finds the last locations for each shuttle by looking through the "data" hashtable
+	/*
+	public String[] getLastLocations()
+	{
+		String[] locations = null;
+		
+		for( int i=0; i<data.size(); i++)
+		{
+			
+			
+		}
+		
+		
+		return locations;
+		
+	}*/
+	
+	public int getIds()
 	{		
-		parseLastLine();
-		return Integer.parseInt(parsedLine[0]);
+		//parseLastLine();
+		//return Integer.parseInt(parsedLine[0]);
+		return id;
 	}
 	
 	public double getLatitude()
 	{
-		parseLastLine();
-		System.out.println("\nGetLatitude: " + parsedLine[1]);
+		//parseLastLine();
+		//System.out.println("\nGetLatitude: " + parsedLine[1]);
 		//return model.getLatitude();	
-		return Double.parseDouble(parsedLine[1]);
+		//return Double.parseDouble(parsedLine[1]);
+		return lat;
 	}
 	
 	public double getLongitude()
 	{
-		parseLastLine();
-		System.out.println("GetLongitude: " + parsedLine[2]);
+		//parseLastLine();
+		//System.out.println("GetLongitude: " + parsedLine[2]);
 		//return model.getLongitude();
-		return Double.parseDouble(parsedLine[2]);	
+		//return Double.parseDouble(parsedLine[2]);	
+		return lon;
 	}
 	
 	

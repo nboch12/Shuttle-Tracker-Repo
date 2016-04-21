@@ -29,7 +29,7 @@ private static final long serialVersionUID = 1L;
 		// Add result objects as request attributes
 				req.setAttribute("latitude", controller.getLatitude() );
 				req.setAttribute("longitude", controller.getLongitude() );
-				req.setAttribute("id", controller.getId());
+				req.setAttribute("id", controller.getIds());
 		
 		req.getRequestDispatcher("/_view/displayGPS.jsp").forward(req, resp);
 	}
@@ -54,7 +54,7 @@ private static final long serialVersionUID = 1L;
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("latitude", controller.getLatitude() );
 		req.setAttribute("longitude", controller.getLongitude() );
-		req.setAttribute("id", controller.getId());
+		req.setAttribute("id", controller.getIds());
 		
 		
 		//System.out.println("LAT: " +  model.getLatitude() + " LON: " + model.getLongitude() + " Controller: " + controller.getLatitude());

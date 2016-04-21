@@ -50,6 +50,7 @@ public class ShuttleTrackerControllerTest {
 		assertTrue(model.getTime() == "1234");
 	}
 	
+	/*
 	@Test
 	public void testOutputCSV()
 	{
@@ -64,12 +65,12 @@ public class ShuttleTrackerControllerTest {
 		{
 			e.printStackTrace();
 		}	
-	}
+	}*/
 	
 	@Test
 	public void testGetId()
 	{				
-		assertTrue(controller.getId() ==  123);
+		assertTrue(controller.getIds() ==  123);
 	}
 	
 	@Test

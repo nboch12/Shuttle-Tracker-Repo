@@ -158,10 +158,10 @@
 		</script>
 		
 		<script>
-		
+		/*
 			window.setInterval(function(){
 				onRefresh();
-				}, 10);
+				}, 10);*/
 			
 			var lat = <%=latitude%>
 			var lon = <%=longitude%>
@@ -197,7 +197,7 @@
 				  icon: icon
 				  });
 			
-			console.log(<%=latitude%>+","+<%=longitude%>);
+			console.log("Latitude: "+<%=latitude%>+" Longitude: "+<%=longitude%>);
 			
 			function initialize()
 			{				
