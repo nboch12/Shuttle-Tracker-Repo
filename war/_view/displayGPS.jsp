@@ -152,6 +152,7 @@
 		<% double latitude = (Double) request.getAttribute("latitude"); %>
 		<% double longitude = (Double) request.getAttribute("longitude"); %>
 		<% int id = (Integer) request.getAttribute("id"); %>
+		<% String locations = (String)request.getAttribute("locations"); %>
 		
 		<script
 		src="http://maps.googleapis.com/maps/api/js">
@@ -163,10 +164,20 @@
 				onRefresh();
 				}, 10);*/
 			
+		
 			var lat = <%=latitude%>
 			var lon = <%=longitude%>
 			var id = <%=id%>
+			var locations = [<%=locations%>];
+			/*
+			for( int i=0; i<locations.length; i++ )
+			{
+				console.log("Location "+i+": " + locations[i]);
+				
+			}*/
 			
+			
+			// Set coordinates for shuttle stops
 			var myCenter=new google.maps.LatLng(39.9455,-76.7321);
 			var marker1=new google.maps.LatLng(lat,lon);
 			var marker2=new google.maps.LatLng(lat,lon);

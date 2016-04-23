@@ -24,7 +24,8 @@
 					$.ajax({
 						type: 'GET',
 						url: '/lab12/ajax/updateData',
-						data: { latitude: $("#latitude").val(), longitude: $("#longitude").val(), mac: $("#mac").val(), id: $("#id").val()},
+						data: { locations: $("#locations").val(), latitude: $("#latitude").val(), longitude: $("#longitude").val(), mac: $("#mac").val(), id: $("#id").val()},
+						//data: { locations: JSON.stringify($('#locations')), latitude: $("#latitude").val(), longitude: $("#longitude").val(), mac: $("#mac").val(), id: $("#id").val()},
 						success:
 							function(data, textStatus, jqXHR) {
 								$("#resultElt").text(data);

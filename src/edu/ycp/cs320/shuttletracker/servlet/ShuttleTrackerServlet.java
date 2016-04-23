@@ -32,12 +32,20 @@ public class ShuttleTrackerServlet  extends HttpServlet {
 			ShuttleTracker model = new ShuttleTracker();
 			ShuttleTrackerController controller = new ShuttleTrackerController();
 			controller.setModel(model);
+			controller.getData();
 			
 			// Reconstruct current ShuttleTracker model object
 			Double curLat = getDouble(req, "latitude");
 			Double curLong = getDouble(req, "longitude");
 			String mac = req.getParameter("mac");
 			int id = getInteger(req, "id");	
+			
+			// Check for max shuttle ID ( Error prevention )
+			if( id > controller.getMaxID()+1 )
+			{
+				id = controller.getMaxID()+1;
+				message = "Error: ID changed to: " + id;				
+			}
 			
 			// Set Model
 			model.setId(id);
@@ -65,7 +73,6 @@ public class ShuttleTrackerServlet  extends HttpServlet {
 		req.setAttribute("mac", req.getParameter("mac"));
 		req.setAttribute("longitude", req.getParameter("longitude"));
 		req.setAttribute("latitude", req.getParameter("latitude"));
-		
 				
 		// Add result objects as request attributes
 		req.setAttribute("message", message);

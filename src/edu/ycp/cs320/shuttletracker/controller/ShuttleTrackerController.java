@@ -108,12 +108,11 @@ public class ShuttleTrackerController {
 		model.setLatitude(lat);
 		model.setLongitude(lon);
 		model.setMAC(mac);
-		model.setTime(time);	
-		
+		model.setTime(time);
 		
 		outputToDatabase();
 		
-		System.out.println("updateModel: " + id + " " + lat + " " + lon + " " + mac + " " + time);
+		//System.out.println("updateModel: " + id + " " + lat + " " + lon + " " + mac + " " + time);
 	}
 	
 	
@@ -125,7 +124,7 @@ public class ShuttleTrackerController {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			System.out.println("\nConnected to database. Trying to send data");
+			System.out.println("\nConnected to database. Sending data");
 		} catch (SQLException e) {
 			System.out.println("ERROR: Could not connect to the database");
 			e.printStackTrace();
@@ -175,14 +174,14 @@ public class ShuttleTrackerController {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			System.out.println("\nConnected to database. Trying to get data");
+			System.out.println("\nConnected to database. Getting data");
 		} catch (SQLException e) {
 			System.out.println("\nERROR: Could not connect to the database\n");
 			e.printStackTrace();
 			return;
 		}
 		
-		// Get data from MySQL	
+		// Get data from MySQL and store in hashtable
 		try {
 			Statement st = conn.createStatement();
 			String sql = "SELECT * FROM pi_data";
@@ -222,7 +221,7 @@ public class ShuttleTrackerController {
 			}
 			
 			// Output entire ResultSet 
-			// System.out.println(data);
+			//System.out.println(data);
 			
 		} catch ( SQLException e ) {
 			System.out.println("ERROR: Could not pull records");
@@ -231,22 +230,48 @@ public class ShuttleTrackerController {
 		}		
 	}
 	
-	// Finds the last locations for each shuttle by looking through the "data" hashtable
-	/*
-	public String[] getLastLocations()
+	// Returns number of keys in data hashtable. This is used to ensure new PI_IDs are added without gaps
+	public int getMaxID()
 	{
-		String[] locations = null;
+		System.out.println("GetMaxID: " + data.size());
+		return data.size();
+	}
+	
+	// Finds the last locations for each shuttle by looking through the "data" hashtable
+	public String getLastLocations()
+	{		
+		//String[] locations = new String[10];
+		//locations[0] = "";
+		String locations="";
+		String temp;
 		
-		for( int i=0; i<data.size(); i++)
+		
+		for( int i=1; i<=data.size(); i++)
 		{
-			
-			
-		}
+			if( !data.get(i).peek().isEmpty() )
+			{
+				// Get last entry from hashtable key and parse it to only include Lat/Lon
+				 temp = data.get(i).peek();
+				 // Splits data row into separate entries
+				 String[] parsedLine = temp.split(",");				 
+				 //locations[i] = parsedLine[1]+","+parsedLine[2];		
+				 locations += "\""+parsedLine[1]+","+parsedLine[2] + "\",";
+				 
+				 
+				// Output locations array
+				//System.out.println("Location " + i + ": " + locations[i]);
+			} else
+			{
+				System.out.println("Null entry avoided");
+			}			
+		}		
 		
+		// Remove last comma
+		locations = locations.substring(0, locations.length()-1);
 		
-		return locations;
-		
-	}*/
+		System.out.println("Locations: (CONTROLLER) "+locations);
+		return locations;		
+	}
 	
 	public int getIds()
 	{		
