@@ -33,7 +33,7 @@ private static final long serialVersionUID = 1L;
 				req.setAttribute("id", controller.getIds());
 				req.setAttribute("locations", controller.getLastLocations());
 		
-				System.out.println("Locations: (SERVLET)  " + controller.getLastLocations());
+				//System.out.println("Locations: (SERVLET)  " + controller.getLastLocations());
 		req.getRequestDispatcher("/_view/displayGPS.jsp").forward(req, resp);
 	}
 	

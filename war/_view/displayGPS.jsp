@@ -148,10 +148,6 @@
 		
 		</style>
 		
-		
-		<% double latitude = (Double) request.getAttribute("latitude"); %>
-		<% double longitude = (Double) request.getAttribute("longitude"); %>
-		<% int id = (Integer) request.getAttribute("id"); %>
 		<% String locations = (String)request.getAttribute("locations"); %>
 		
 		<script
@@ -165,22 +161,36 @@
 				}, 10);*/
 			
 		
-			var lat = <%=latitude%>
-			var lon = <%=longitude%>
-			var id = <%=id%>
 			var locations = [<%=locations%>];
-			/*
-			for( int i=0; i<locations.length; i++ )
-			{
-				console.log("Location "+i+": " + locations[i]);
+			var shuttles = new Array();
+			var markers = new Array();
+			
+			// Shuttle Icon
+			var icon = {
+					url: "https://maps.google.com/mapfiles/kml/shapes/rec_bus.png",
+					scaledSize: new google.maps.Size(30, 30),
+			}
+			
+			for( var i=1; i<=locations.length; i++ )
+			{	
+				// Parse lat/lon 
+				var latlon = locations[i-1].split(",");
 				
-			}*/
+				// Assign lat/lon to Google Maps LatLng object 
+				shuttles[i-1] = new google.maps.LatLng(latlon[0],latlon[1]);
+				
+				// Assign shuttle location to Google Maps Marker
+				markers[i-1] =new google.maps.Marker({
+					 			 position: shuttles[i-1],				  
+					  			 icon: icon
+					  			});
+				
+				console.log("Location: " + i + " Lat: "+ latlon[0] + " Lon: " + latlon[1]);
+			}
 			
 			
 			// Set coordinates for shuttle stops
 			var myCenter=new google.maps.LatLng(39.9455,-76.7321);
-			var marker1=new google.maps.LatLng(lat,lon);
-			var marker2=new google.maps.LatLng(lat,lon);
 			var wolfStop=new google.maps.LatLng(39.9455,-76.7304);
 			var creekStop=new google.maps.LatLng(39.9477,-76.7278);
 			var northSideStop=new google.maps.LatLng(39.9496,-76.7337);
@@ -195,27 +205,15 @@
 					  mapTypeId:google.maps.MapTypeId.ROADMAP
 					  };
 			
-			var icon = {
-					url: "https://maps.google.com/mapfiles/kml/shapes/rec_bus.png",
-					scaledSize: new google.maps.Size(30, 30),
-			}
-			var marker=new google.maps.Marker({
-				  position:marker1,				  
-				  icon: icon
-				  });
-			var markerB=new google.maps.Marker({
-				  position:marker2,				  
-				  icon: icon
-				  });
-			
-			console.log("Latitude: "+<%=latitude%>+" Longitude: "+<%=longitude%>);
 			
 			function initialize()
 			{				
 				var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
-							
-				marker.setMap(map);
-				markerB.setMap(map);
+				
+				for( var i=0; i<markers.length; i++ )
+				{
+					markers[i].setMap(map);
+				}
 				
 				var flagIcon = {
 						url: "http://moena.us/flag2.png",
@@ -273,8 +271,6 @@
 			function onRefresh()
 			{
 				console.log("onRefresh");
-				marker.setPosition(new google.maps.LatLng(lat+num, lon+num));
-				markerB.setPosition(new google.maps.LatLng(lat, lon-num));
 				num=num+.000002;
 			}
 			

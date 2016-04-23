@@ -22,10 +22,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.Queue;
+import java.util.Stack;
 
 public class ShuttleTrackerController {
 	private ShuttleTracker model;
-	private Hashtable<Integer, Queue<String>> data = new Hashtable<Integer, Queue<String>>();
+	private Hashtable<Integer, Stack<String>> data = new Hashtable<Integer, Stack<String>>();
 	
 	// SQL String Variables
 	private int id;
@@ -198,7 +199,7 @@ public class ShuttleTrackerController {
 				time = rs.getString("DATE");
 				
 				// Add new entry to queue
-				Queue<String> tempQ = new LinkedList();
+				Stack<String> tempQ = new Stack();
 				
 				// Use previous queue 
 				if( data.get(id) != null )
@@ -248,18 +249,19 @@ public class ShuttleTrackerController {
 		
 		for( int i=1; i<=data.size(); i++)
 		{
+			System.out.println("For Loop: " + i + " Data: " + data.get(i));
 			if( !data.get(i).peek().isEmpty() )
 			{
 				// Get last entry from hashtable key and parse it to only include Lat/Lon
-				 temp = data.get(i).peek();
+				//Stack<String> line = data.get(i);
+				 //temp = getLastData(line);
+				temp = data.get(i).peek();
+				 //System.out.println("GetLastData: "+ i + " " + temp);
 				 // Splits data row into separate entries
-				 String[] parsedLine = temp.split(",");				 
-				 //locations[i] = parsedLine[1]+","+parsedLine[2];		
-				 locations += "\""+parsedLine[1]+","+parsedLine[2] + "\",";
+				 String[] parsedLine = temp.split(",");		
 				 
+				 locations += "\""+parsedLine[1]+","+parsedLine[2] + "\",";				 
 				 
-				// Output locations array
-				//System.out.println("Location " + i + ": " + locations[i]);
 			} else
 			{
 				System.out.println("Null entry avoided");
@@ -271,6 +273,20 @@ public class ShuttleTrackerController {
 		
 		System.out.println("Locations: (CONTROLLER) "+locations);
 		return locations;		
+	}
+	
+	public String getLastData( Stack<String> input )
+	{
+		int i=input.size();
+		String lastData = "";
+		
+		while( i>0)
+		{
+			//lastData = input.
+			i--;
+		}
+		
+		return lastData;
 	}
 	
 	public int getIds()
