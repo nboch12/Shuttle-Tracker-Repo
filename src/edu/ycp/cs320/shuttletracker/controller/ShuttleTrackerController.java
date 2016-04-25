@@ -249,14 +249,12 @@ public class ShuttleTrackerController {
 		
 		for( int i=1; i<=data.size(); i++)
 		{
-			System.out.println("For Loop: " + i + " Data: " + data.get(i));
+			//System.out.println("For Loop: " + i + " Data: " + data.get(i));
 			if( !data.get(i).peek().isEmpty() )
 			{
 				// Get last entry from hashtable key and parse it to only include Lat/Lon
-				//Stack<String> line = data.get(i);
-				 //temp = getLastData(line);
 				temp = data.get(i).peek();
-				 //System.out.println("GetLastData: "+ i + " " + temp);
+				
 				 // Splits data row into separate entries
 				 String[] parsedLine = temp.split(",");		
 				 
@@ -273,51 +271,5 @@ public class ShuttleTrackerController {
 		
 		System.out.println("Locations: (CONTROLLER) "+locations);
 		return locations;		
-	}
-	
-	public String getLastData( Stack<String> input )
-	{
-		int i=input.size();
-		String lastData = "";
-		
-		while( i>0)
-		{
-			//lastData = input.
-			i--;
-		}
-		
-		return lastData;
-	}
-	
-	public int getIds()
-	{		
-		//parseLastLine();
-		//return Integer.parseInt(parsedLine[0]);
-		return id;
-	}
-	
-	public double getLatitude()
-	{
-		//parseLastLine();
-		//System.out.println("\nGetLatitude: " + parsedLine[1]);
-		//return model.getLatitude();	
-		//return Double.parseDouble(parsedLine[1]);
-		return lat;
-	}
-	
-	public double getLongitude()
-	{
-		//parseLastLine();
-		//System.out.println("GetLongitude: " + parsedLine[2]);
-		//return model.getLongitude();
-		//return Double.parseDouble(parsedLine[2]);	
-		return lon;
-	}
-	
-	
-	
-	
-	
-	
-	
+	}	
 }

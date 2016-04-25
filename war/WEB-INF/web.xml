@@ -67,6 +67,7 @@
     <url-pattern>/displayGPS</url-pattern>
   </servlet-mapping>
   
+  
   <!--  AJAX servlet mappings. -->
   <servlet-mapping>
     <servlet-name>AddNumbersAjaxServlet</servlet-name>
@@ -79,6 +80,10 @@
   <servlet-mapping>
     <servlet-name>AddDataAjaxServlet</servlet-name>
     <url-pattern>/ajax/addData</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UpdateDataAjaxServlet</servlet-name>
+    <url-pattern>/ajax/updateData</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

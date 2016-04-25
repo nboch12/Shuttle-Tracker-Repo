@@ -7,8 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jetty.util.ajax.JSON;
+
 import edu.ycp.cs320.shuttletracker.controller.ShuttleTrackerController;
-import edu.ycp.cs320.shuttletracker.model.ShuttleTracker;
 
 public class UpdateDataAjaxServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -32,10 +33,17 @@ public class UpdateDataAjaxServlet extends HttpServlet {
 		
 			//ShuttleTracker model = new ShuttleTracker();
 			ShuttleTrackerController controller = new ShuttleTrackerController();
+			controller.getData();
 			
-			result = Double.toString(controller.getLatitude());
-			result += " " + Double.toString(controller.getLongitude());
-			System.out.println("AJAX");
+			//result = Double.toString(controller.getLatitude());
+			//result += " " + Double.toString(controller.getLongitude());
+			result = controller.getLastLocations();
+			//result = "{\"shuttle\":[{\"lat:\":123.123, \"lon:\"321.321}]}";
+			
+			//resp.setAttribute("locations", controller.getLastLocations());
+			
+			
+			System.out.println("UpdateMap AJAX Reply: "+ result);
 			resp.setContentType("text/plain");
 			resp.getWriter().println(result);
 	}
