@@ -175,7 +175,7 @@ public class ShuttleTrackerController {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			System.out.println("\nConnected to database. Getting data");
+			//System.out.println("\nConnected to database. Getting data");
 		} catch (SQLException e) {
 			System.out.println("\nERROR: Could not connect to the database\n");
 			e.printStackTrace();
@@ -246,30 +246,32 @@ public class ShuttleTrackerController {
 		String locations="";
 		String temp;
 		
-		
-		for( int i=1; i<=data.size(); i++)
+		if( data.size() > 0 )
 		{
-			//System.out.println("For Loop: " + i + " Data: " + data.get(i));
-			if( !data.get(i).peek().isEmpty() )
+			for( int i=1; i<=data.size(); i++)
 			{
-				// Get last entry from hashtable key and parse it to only include Lat/Lon
-				temp = data.get(i).peek();
-				
-				 // Splits data row into separate entries
-				 String[] parsedLine = temp.split(",");		
-				 
-				 locations += "\""+parsedLine[1]+","+parsedLine[2] + "\",";				 
-				 
-			} else
-			{
-				System.out.println("Null entry avoided");
-			}			
-		}		
+				//System.out.println("For Loop: " + i + " Data: " + data.get(i));
+				if( !data.get(i).peek().isEmpty() )
+				{
+					// Get last entry from hashtable key and parse it to only include Lat/Lon
+					temp = data.get(i).peek();
+					
+					 // Splits data row into separate entries
+					 String[] parsedLine = temp.split(",");		
+					 
+					 locations += "\""+parsedLine[1]+","+parsedLine[2] + "\",";				 
+					 
+				} else
+				{
+					System.out.println("Null entry avoided");
+				}			
+			}		
 		
-		// Remove last comma
-		locations = locations.substring(0, locations.length()-1);
 		
-		System.out.println("Locations: (CONTROLLER) "+locations);
+			// Remove last comma
+			locations = locations.substring(0, locations.length()-1);
+		}
+		//System.out.println("Locations: (CONTROLLER) "+locations);
 		return locations;		
 	}	
 }

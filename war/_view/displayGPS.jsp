@@ -154,20 +154,23 @@
 		src="http://maps.googleapis.com/maps/api/js">
 		</script>
 		
-		<script>
-		/*
-			window.setInterval(function(){
-				onRefresh();
-				}, 10);*/
-			
-		
+		<script>		
 			var locations2 = [<%=locations%>];
 			var locations = [];
+			var prevLocations = [];
 			var shuttles = new Array();
 			var markers = new Array();
-			var map
+			var map;			
 			
-			
+			// Set coordinates for shuttle stops
+			var myCenter=new google.maps.LatLng(39.946397, -76.734519);
+			var wolfStop=new google.maps.LatLng(39.9455,-76.7304);
+			var creekStop=new google.maps.LatLng(39.9477,-76.7278);
+			var northSideStop=new google.maps.LatLng(39.9496,-76.7337);
+			var grumStop=new google.maps.LatLng(39.9455,-76.7352);
+			var railTrailStop=new google.maps.LatLng(39.9475,-76.7370);
+			var readCoStop=new google.maps.LatLng(39.9446,-76.7397);
+			var springGardenStop=new google.maps.LatLng(39.9429,-76.7383);			
 			
 			// Shuttle Icon
 			var icon = {
@@ -176,34 +179,14 @@
 			}
 			
 			
-				
-				/*
-				for( var i=1; i<=locations.length; i++ )
-				{	
-					// Parse lat/lon 
-					var latlon = locations[i-1].split(",");
-					
-					// Assign lat/lon to Google Maps LatLng object 
-					shuttles[i-1] = new google.maps.LatLng(latlon[0],latlon[1]);
-					
-					// Assign shuttle location to Google Maps Marker
-					markers[i-1] =new google.maps.Marker({
-						 			 position: shuttles[i-1],				  
-						  			 icon: icon
-						  			});
-					
-					//console.log("Location: " + i + " Lat: "+ latlon[0] + " Lon: " + latlon[1]);
-				}*/
-			
-			
-			
-			var ajaxObj = { //Object to save cluttering the namespace.
+			// AJAX Object used to request/receive data
+			var ajaxObj = { 
 				    options: {
 				        url: "/shuttletracker/ajax/updateData", //The resource that delivers loc data.
 				        type: 'GET',
-				        dataType: "text"//The type of data tp be returned by the server.
+				        dataType: "text"
 				    },
-				    delay: 2000, //(milliseconds) the interval between successive gets.
+				    delay: 250, //(milliseconds) the interval between successive gets.
 				    errorCount: 0, //running total of ajax errors.
 				    errorThreshold: 5, //the number of ajax errors beyond which the get cycle should cease.
 				    ticker: null, //setTimeout reference - allows the get cycle to be cancelled with clearTimeout(ajaxObj.ticker);
@@ -220,30 +203,13 @@
 			
 			//Ajax master routine
 			function getMarkerData() {
-				console.log("Getting Marker Data");
+				//console.log("Getting Marker Data");
 			    $.ajax(ajaxObj.options)
 			        .done(addMarkers) 	//fires when ajax returns successfully
 			    .fail(ajaxObj.fail) 	//fires when an ajax error occurs
 			    .always(ajaxObj.get); 	//fires after ajax success or ajax error
-			}
+			}	
 			
-			
-			// Set coordinates for shuttle stops
-			var myCenter=new google.maps.LatLng(39.946397, -76.734519);
-			var wolfStop=new google.maps.LatLng(39.9455,-76.7304);
-			var creekStop=new google.maps.LatLng(39.9477,-76.7278);
-			var northSideStop=new google.maps.LatLng(39.9496,-76.7337);
-			var grumStop=new google.maps.LatLng(39.9455,-76.7352);
-			var railTrailStop=new google.maps.LatLng(39.9475,-76.7370);
-			var readCoStop=new google.maps.LatLng(39.9446,-76.7397);
-			var springGardenStop=new google.maps.LatLng(39.9429,-76.7383);
-			
-				  
-			
-			
-		
-		
-				
 			function initialize()
 			{				
 				map = new google.maps.Map(document.getElementById("googleMap"),{
@@ -257,8 +223,16 @@
 						scaledSize: new google.maps.Size(20, 30),
 				}
 				
-				
-				
+				// Create blank array of shuttle locations
+				for( var i=0; i<10; i++)
+				{
+					markers[i] = new google.maps.Marker({
+			 			 position: new google.maps.LatLng(0.0,0.0),				  
+			  			 icon: icon,
+			  			 map: map
+			  			});
+				}		
+								
 				var WolfMarker=new google.maps.Marker({
 					  position:wolfStop,
 					  icon: flagIcon,
@@ -300,66 +274,64 @@
 					icon: flagIcon,
 					 });
 					SpringMarker.setMap(map);
-			}
+			}			
 			
-			google.maps.event.addDomListener(window, 'load', initialize);
-			addMarkers();
-			ajaxObj.get();
 			
 			function addMarkers()
-			{				
+			{	
 				var xhr = new XMLHttpRequest();
 				var shuttleUpdate;
 				xhr.open('GET', '/shuttletracker/ajax/updateData', true);
 
-				// If specified, responseType must be empty string or "text"
+				// Load data from AJAX response into array
 				xhr.responseType = 'text';
 
 				xhr.onload = function () {
 				    if (xhr.readyState === xhr.DONE) {
 				        if (xhr.status === 200) {
 				        	shuttleUpdate = xhr.responseText;
-				        	console.log("Response: " + shuttleUpdate);
+				        	//console.log("Response: " + shuttleUpdate);
 				        	locations = shuttleUpdate.split(",");
 				        }
 				    }
 				};
 
-				xhr.send(null);
+				xhr.send(null);				
 				
-				
-				for( var i=0; i<locations.length/2-1; i++ )
-				{	
-					//console.log("Locations: "+ i + " " + locations[i]);
-					var temp1 = locations[2*i];
-					temp1 = temp1.substring(1,temp1.length);
-					var temp2 = locations[(2*i)+1];
-					temp2 = temp2.substring(0,temp2.length-2);
-					
-					//var latlon = temp1.split(",");
-					
-				
-					//console.log("Coords: " + i + " " + temp1 + " " + temp2);
-					// Assign lat/lon to Google Maps LatLng object 
-					shuttles[i] = new google.maps.LatLng(temp1,temp2);
-					
-					// Assign shuttle location to Google Maps Marker
-					markers[i] = new google.maps.Marker({
-						 			 position: shuttles[i],				  
-						  			 icon: icon,
-						  			 map: map
-						  			});
-					
-					
-					//console.log("Location: " + i + " Lat: "+ latlon[0] + " Lon: " + latlon[1]);
-				}
-				
-				
-				for( var i=0; i<markers.length; i++ )
+				// Iterate through array and set locations for the map
+				if( locations.length > 1 ) 
 				{
-					markers[i].setPosition(shuttles[i]);
+					for( var i=0; i<locations.length/2; i++ )
+					{	
+						// Location array is formatted as location[i] = "lat,lon" and needs to be parsed
+						var temp1 = locations[2*i];
+						temp1 = temp1.substring(1,temp1.length);
+						locations[2*i] = temp1;
+						
+						var temp2 = locations[(2*i)+1];
+						temp2 = temp2.substring(0,temp2.length-2);
+						temp2 = temp2.replace("\"", "0");
+						locations[(2*i)+1] = temp2;
+						
+						
+						// Assign lat/lon to Google Maps LatLng object 
+						shuttles[i] = new google.maps.LatLng(temp1,temp2);
+						
+						// Only update if the position changes
+						if( locations[2*i] != prevLocations[2*i] || locations[(2*i)+1] != prevLocations[(2*i)+1]) {
+							console.log("Shuttle: " + (i+1) + " changed");
+							markers[i].setPosition(shuttles[i]);
+							
+							prevLocations[2*i] = locations[2*i];
+							prevLocations[2*i+1] = locations[2*i+1];
+						}
+					}
 				}
 			}
+			
+			google.maps.event.addDomListener(window, 'load', initialize);
+			addMarkers();
+			ajaxObj.get();
 			
 	</script>
 	</head>
