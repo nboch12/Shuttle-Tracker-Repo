@@ -11,14 +11,6 @@
     <servlet-class>edu.ycp.cs320.shuttletracker.servlet.IndexServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>AddNumbersServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.shuttletracker.servlet.AddNumbersServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>GuessingGameServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.shuttletracker.servlet.GuessingGameServlet</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>ShuttleTrackerServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.shuttletracker.servlet.ShuttleTrackerServlet</servlet-class>
   </servlet>
@@ -28,14 +20,6 @@
   </servlet>
   
   <!-- AJAX servlets. -->
-  <servlet>
-    <servlet-name>AddNumbersAjaxServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.shuttletracker.servlet.ajax.AddNumbersAjaxServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>NextGuessAjaxServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.shuttletracker.servlet.ajax.NextGuessAjaxServlet</servlet-class>
-  </servlet>
   <servlet>
     <servlet-name>AddDataAjaxServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.shuttletracker.servlet.ajax.AddDataAjaxServlet</servlet-class>
@@ -51,14 +35,6 @@
     <url-pattern>/index</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>AddNumbersServlet</servlet-name>
-    <url-pattern>/addNumbers</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>GuessingGameServlet</servlet-name>
-    <url-pattern>/guessingGame</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>ShuttleTrackerServlet</servlet-name>
     <url-pattern>/shuttleTracker</url-pattern>
   </servlet-mapping>
@@ -69,14 +45,6 @@
   
   
   <!--  AJAX servlet mappings. -->
-  <servlet-mapping>
-    <servlet-name>AddNumbersAjaxServlet</servlet-name>
-    <url-pattern>/ajax/addNumbers</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>NextGuessAjaxServlet</servlet-name>
-    <url-pattern>/ajax/nextGuess</url-pattern>
-  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AddDataAjaxServlet</servlet-name>
     <url-pattern>/ajax/addData</url-pattern>
