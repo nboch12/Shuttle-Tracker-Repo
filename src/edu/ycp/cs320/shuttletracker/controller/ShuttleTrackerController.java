@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -21,8 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-import java.util.Queue;
 import java.util.Stack;
+
+import com.mysql.fabric.xmlrpc.base.Array;
 
 public class ShuttleTrackerController {
 	private ShuttleTracker model;
@@ -223,6 +225,7 @@ public class ShuttleTrackerController {
 			
 			// Output entire ResultSet 
 			//System.out.println(data);
+			conn.close();
 			
 		} catch ( SQLException e ) {
 			System.out.println("ERROR: Could not pull records");
@@ -234,15 +237,29 @@ public class ShuttleTrackerController {
 	// Returns number of keys in data hashtable. This is used to ensure new PI_IDs are added without gaps
 	public int getMaxID()
 	{
-		System.out.println("GetMaxID: " + data.size());
+		//System.out.println("GetMaxID: " + data.size());
 		return data.size();
+	}
+	
+	public String[] getShuttleStops()
+	{
+		String[] shuttleStops = new String[7];
+		
+		// Will grab from MySQL eventually but for now, manually input shuttle stop coordinates and data.
+		shuttleStops[0] = "Wolf Hall,39.9455,-76.7304";		
+		shuttleStops[1] = "Creek Crossing,39.9477,-76.7278";
+		shuttleStops[2] = "Northside Commons,39.9496,-76.7337";
+		shuttleStops[3] = "Grumbacher/Diehl Lot,39.9455,-76.7352";
+		shuttleStops[4] = "Readco Lot,39.9446,-76.7397";
+		shuttleStops[5] = "Rail Trail Lot,39.9475,-76.7370";
+		shuttleStops[6] = "Spring Garden,39.9429,-76.7383";
+				
+		return shuttleStops;
 	}
 	
 	// Finds the last locations for each shuttle by looking through the "data" hashtable
 	public String getLastLocations()
 	{		
-		//String[] locations = new String[10];
-		//locations[0] = "";
 		String locations="";
 		String temp;
 		
@@ -259,7 +276,7 @@ public class ShuttleTrackerController {
 					 // Splits data row into separate entries
 					 String[] parsedLine = temp.split(",");		
 					 
-					 locations += "\""+parsedLine[1]+","+parsedLine[2] + "\",";				 
+					 locations +=parsedLine[1]+","+parsedLine[2]+",";
 					 
 				} else
 				{
@@ -272,6 +289,6 @@ public class ShuttleTrackerController {
 			locations = locations.substring(0, locations.length()-1);
 		}
 		//System.out.println("Locations: (CONTROLLER) "+locations);
-		return locations;		
+		return locations;
 	}	
 }
