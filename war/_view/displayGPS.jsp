@@ -7,6 +7,7 @@
 		<title>Display GPS</title>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<link href='https://fonts.googleapis.com/css?family=Lato:700' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
 		<link href='css/display.css' rel='stylesheet' type='text/css'>
 	
 		
@@ -155,7 +156,8 @@
 	<div class="bg">
 		<div class="mainDiv">
 			<div class="header">
-				Shuttle Location System
+				Shuttle Tracking System
+				<div style="position: absolute; right: 5%; top: 30px;"><img src="http://www.moena.us/mirror/ycp.png"></div>
 			</div>
 		
 			<div id="googleMap" style="width:100%;height:650px; border-bottom: solid black 1px;"></div>
@@ -165,17 +167,18 @@
 				Stop &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<div class="dropdown">
 				
-				<button class="dropbtn">Northside Commons</button>
-					<div class="dropdown-content">
-						<a href="#">Northside Commons</a>
-						<a href="#">Wolf Hall to Creek</a>
-						<a href="#">Wolf Hall to West</a>
-						<a href="#">Creek Crossing</a>
-						<a href="#">Spring Garden Apartments</a>
-						<a href="#">Readco Lot</a>
-						<a href="#">Rail Trail Lot</a>
-						<a href="#">Grumbacher/Diehl Lot</a>
-					</div>				
+				<select>
+					<option value="northside">Northside Commons</option>
+					<option value="wolf1">Wolf Hall to Creek</option>
+					<option value="wolf2">Wolf Hall to West</option>
+					<option value="creek">Creek Crossing</option>
+					<option value="spring">Spring Garden Apartments</option>
+					<option value="readco">Readco Lot</option>
+					<option value="railtrail">Rail Trail Lot</option>
+					<option value="grum">Grumbacher/Diehl Lot</option>				
+				</select>
+				
+								
 				</div>
 				
 				<br><br>Arrival
