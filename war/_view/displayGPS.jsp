@@ -157,7 +157,7 @@
 		<div class="mainDiv">
 			<div class="header">
 				Shuttle Tracking System
-				<div style="position: absolute; right: 5%; top: 30px;"><img src="http://www.moena.us/mirror/ycp.png"></div>
+				<div style="position: absolute; right: 5%; top: 30px;"><img src="css/ycp.png"></div>
 			</div>
 		
 			<div id="googleMap" style="width:100%;height:650px; border-bottom: solid black 1px;"></div>
